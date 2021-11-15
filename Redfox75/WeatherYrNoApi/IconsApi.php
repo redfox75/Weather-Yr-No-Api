@@ -109,6 +109,12 @@ private $iconsLegends;
                 // directory destination
                 // ../../ because is 2 level under
                 $destination = __DIR__ . '/../../public/imagesWYN/icons/weather';
+                if (!is_dir($destination)) {
+                    if (!mkdir($destination, 0777, true) && !is_dir($destination)) {
+                        throw new RuntimeException(sprintf('Directory "%s" was not created', $destination));
+                    }
+                }
+
                 // clean destination directory
                 Library::deleteDirectory($destination);
                 rename($pathExtract, $destination);

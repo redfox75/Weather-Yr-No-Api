@@ -59,6 +59,7 @@ private $iconsLegends;
     {
         //set tmp path
         $this->tmpPath = $this->tmpPath ?? __DIR__ . '/tmp';
+
         //url to fetch icons zip
         $url = $this->apiIconZip;
         $link = "weathericon/2.0/data";
@@ -69,7 +70,7 @@ private $iconsLegends;
             $contentTypeArray = explode(';', $this->wyn->fetchData->contentType);
             $fileNameArray = explode('=', $contentTypeArray[1]);
             $fileName = str_replace('"', '', $fileNameArray[1]);
-
+            $this->tmpPath = '/temporary';
             $path = $this->tmpPath . '/iconImages';
 
             if (!is_dir($path)) {
@@ -110,10 +111,10 @@ private $iconsLegends;
                 // ../../ because is 2 level under
                 $destination = __DIR__ . '/../../public/imagesWYN/icons/weather';
                 // clean destination directory
-                Library::deleteDirectory($destination);
+//                Library::deleteDirectory($destination);
                 rename($pathExtract, $destination);
                 // remove old temps files
-                Library::deleteDirectory($path);
+//                Library::deleteDirectory($path);
             }
         }
     }
