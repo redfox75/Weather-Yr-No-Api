@@ -2,7 +2,7 @@
 
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
-use Redfox75\WeatherYrNoApi;
+use Redfox75\WeatherYrNoApi\Util\Util;
 
 
 require_once __DIR__ . '/bootstrap.php';

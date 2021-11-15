@@ -5,8 +5,8 @@ namespace Redfox75\WeatherYrNoApi;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Redfox75\WeatherYrNoApi\Exception as WYNException;
-use Redfox75\WeatherYrNoApi\NotFoundException  as WYNNotFoundException ;
+use Redfox75\WeatherYrNoApi\Util\Util\Exception as WYNException;
+use Redfox75\WeatherYrNoApi\Util\Util\NotFoundException  as WYNNotFoundException ;
 class FetchData
 {
 
