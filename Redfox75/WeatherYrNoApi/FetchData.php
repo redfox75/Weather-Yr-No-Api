@@ -5,8 +5,8 @@ namespace Redfox75\WeatherYrNoApi;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Redfox75\WeatherYrNoApi\Util\Util\Exception as WYNException;
-use Redfox75\WeatherYrNoApi\Util\Util\NotFoundException  as WYNNotFoundException ;
+use Redfox75\WeatherYrNoApi\Util\Exception as WYNException;
+use Redfox75\WeatherYrNoApi\Util\NotFoundException  as WYNNotFoundException ;
 class FetchData
 {
 
@@ -80,18 +80,51 @@ public $contentType = null;
      */
     private function buildUrl($url, $query=null, $lang=null, $mode=null)
     {
-        //  $queryUrl = $this->buildQueryUrlParameter($query);
 
-        $url = $url ;//. "$queryUrl&units=$units&lang=$lang&mode=$mode&APPID=";
-        // $url .= empty($appid) ? $this->apiKey : $appid;
+         $queryUrl = $this->buildQueryUrlParameter($query);
+
+        $url = $url .(($queryUrl) ? '?'.$queryUrl :  '');//. "$queryUrl&units=$units&lang=$lang&mode=$mode&APPID=";
+
         return $url;
     }
 
 
-    public function getData($functionCaller, $url, $link =null, $type = 'json',$retention=null ){
+    /**
+     * Builds the query string for the url.
+     *
+     * @param mixed $query
+     *
+     * @return string The built query string for the url.
+     *
+     * @throws InvalidArgumentException If the query parameter is invalid.
+     */
+    private function buildQueryUrlParameter($query)
+    {
+        if($query) {
+            switch ($query) {
+                case is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon']):
+                    return "lat={$query['lat']}&lon={$query['lon']}";
+                /*case is_array($query) && is_numeric($query[0]):
+                    return 'id=' . implode(',', $query);
+                case is_numeric($query):
+                    return "id=$query";
+                case is_string($query) && strpos($query, 'zip:') === 0:
+                    $subQuery = str_replace('zip:', '', $query);
+                    return 'zip=' . urlencode($subQuery);
+                case is_string($query):
+                    return 'q=' . urlencode($query);*/
+                default:
+                    throw new InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getWeather() to read about valid formats.');
+            }
+        }
+         return "";
+    }
+
+
+    public function getData($functionCaller, $url, $link =null, $params =[], $type = 'json',$retention=null ){
         $retention  = $retention ?? self::MINUTESRETENTION;
         //$urlToFetch = $this->buildUrl($url.$link);
-        $urlToFetch = $this->buildUrl($url);
+        $urlToFetch = $this->buildUrl($url, $params);
         $link = $link ?? $url;
         $answer =  $this->cacheOrFetchResult($functionCaller, $link, $urlToFetch,$retention);
         if($type == 'json'){
@@ -111,7 +144,7 @@ public $contentType = null;
     {
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new WYNException('OpenWeatherMap returned an invalid json object. JSON error was: "' .
+            throw new WYNException('Weather yr.no API returned an invalid json object. JSON error was: "' .
                 $this->json_last_error_msg() . '". The retrieved json was: ' . $answer);
         }
         if (isset($json->message)) {

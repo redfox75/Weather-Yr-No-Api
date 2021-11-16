@@ -1,6 +1,6 @@
 <?php
 
-namespace Redfox75\WeatherYrNoApi\Util\Util;
+namespace Redfox75\WeatherYrNoApi\Util;
 
 class Exception extends \Exception
 {

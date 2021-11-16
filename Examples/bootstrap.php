@@ -27,3 +27,7 @@ call_user_func(function () {
     ini_set('date.timezone', 'Europe/Rome');
 });
 
+
+// Load the api key.
+$ini = parse_ini_file('WheaterYrNo.ini');
+$userAgent = $ini['userAgent'];
